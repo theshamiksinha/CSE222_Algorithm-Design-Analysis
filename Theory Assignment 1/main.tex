@@ -1,0 +1,325 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsthm} 
+\newtheorem{claim}{Claim}
+\usepackage{hyperref}
+\usepackage{enumitem} 
+
+
+\usepackage[margin=2.2cm]{geometry}
+
+\title{\fontsize{70}{40}\selectfont\textbf{Theory Assignment-1: ADA Winter-2024}}
+
+\author{\Large Shamik Sinha (2022468) \and \Large Vansh Yadav (2022559)}
+
+
+
+\date{}
+\begin{document}
+
+\maketitle
+
+\section*{\huge{Algorithm Description}}
+% Describe your algorithm here
+ \subsection*{\Large{Assumptions Made}}
+
+\fontsize{12}{15}\selectfont{
+
+\begin{enumerate}
+    \item The arrays are composed of integers i.e. they are integer arrays or at the very least have numeric values (floating point or integer).
+    \item The array indexing follows a 0-based convention. An 'n' sized array has starting index 0 and last index at 'n'-1.
+    \item The arrays, as well as the elements within and between arrays, are distinct without any duplicates, ensuring uniqueness.
+\end{enumerate}
+
+}
+
+\subsection*{\Large{Input}}
+
+\fontsize{12}{15}\selectfont{
+ Three sorted array of A, B and C integers (or floating point values). \\ 
+An integer representing the size of each of the three arrays. It is assumed that all three arrays have the same size, denoted by 'n'. \\
+An integer representing the desired rank of the element we want to find in $A \cup B \cup C$, denoted by 'k'.
+}
+
+\subsection*{\Large{Output}}
+\fontsize{12}{15}\selectfont{
+A single numeric value (Integer or Float), which is the 'k'th smallest value in $A \cup B \cup C$.
+}
+
+\subsection*{\Large{Solution Description}}
+\fontsize{12}{15}\selectfont{
+We decided to utilise the Binary Search algorithm to solve the problem. Using this technique, we divide the arrays into two parts using nested binary search and iteratively check whether we have a suitable partition where the k smallest elements of all the three arrays are on the left partition and the rest in the right partition. \\  \\ \\The problem can be broken down into three parts as is the case with any problem which is solved with the Binary Search algorithm. We determine the 'low' and the 'high' values, calculate a corresponding middle value, check for a given condition on the obtained value and then finally, iterate or end the binary search depending on the conditions used.
+
+\subsection*{\large{1. Initialisation}}
+\fontsize{12}{15}\selectfont{
+The algorithm begins by initializing two pointers ('low1' and 'high1') for the first array A.\\
+It also initializes a variable 'left' to represent the number of elements remaining to reach the k-th smallest element.
+
+}
+
+\subsection*{\large{2. First Binary Search}}
+\fontsize{12}{15}\selectfont{
+Conducts a binary search within the range $\left[\max\left(0, k - 2n\right), \min\left(k, n\right)\right]$ to find the potential position of the $k$-th smallest element in the first array $A$.
+}
+
+\subsection*{\large{3. Second Binary Search}}
+\fontsize{12}{15}\selectfont{
+Inside the first binary search loop, a secondary binary search is performed for the second array B within a range determined by the remaining elements needed (left) to reach the k-th element.
+}
+
+\subsection*{\large{4. Conditions and Comparisons}}
+\fontsize{12}{15}\selectfont{
+Within the second binary search loop, the algorithm checks various conditions involving mid-points and adjacent elements to determine the k-th smallest element.\\ \\
+Conditions consider comparisons between adjacent elements of the three arrays to identify the correct position of the k-th element.
+}
+
+\subsection*{\large{5. Adjustment of Search Ranges}}
+\fontsize{12}{15}\selectfont{
+Based on the comparisons and conditions, the algorithm adjusts the binary search ranges for A and B accordingly to narrow down the search space.
+}
+
+\subsection*{\large{6. Output}}
+\fontsize{12}{15}\selectfont{
+Once the k-th smallest element is found, the algorithm prints or returns the result.
+}
+
+\subsection*{\Large{Dry Run}}
+\fontsize{12}{15}\selectfont{
+As an example, we have shown below a dry run of our algorithm with the arrays \(\{1, 2, 3, 4\}\), \(\{5, 6, 7, 8\}\), and \(\{9, 10, 11, 12\}\).
+
+}
+
+
+
+\begin{figure}[p]  % Use [p] to place the figure on a separate page
+    \centering
+    \includegraphics[width=0.6\textwidth]{1.png}
+    \caption{Iteration 1, in which $l2 > r1$ and $l3 > r1$, therefore, low1 is updated to mid1+1}
+\end{figure}
+\clearpage
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.6\textwidth]{2.png}
+    \caption{Iteration 2, in which $l2 > r1$, therefore, low1 is updated to mid1+1 again}
+\end{figure}
+\clearpage
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.6\textwidth]{3.png}
+    \caption{Iteration 3, in which all conditions are met.}
+    \label{fig:divide}
+\end{figure}
+\clearpage
+
+
+\newpage
+
+\section*{\huge{Complexity Analysis}}
+
+\fontsize{12}{15}\selectfont{
+
+The code consists of two nested binary search loops, and within each binary search loop, there are constant-time operations. Let's denote the size of each array as 'n'.
+\\ \\
+Within the first binary search, with each iteration, the size of the array is reduced using the result of the previous comparison.
+\\ \\
+Initial length of array \(A = n\)
+\\ \\
+Iteration 1 - Length of array \(A = \frac{n}{2}\)
+\\ \\
+Iteration 2 - Length of array \(A = \left(\frac{n}{2}\right) \div 2 = \frac{n}{2^2} = \frac{n}{4}\)
+\\ \\
+Iteration \(k\) - Length of array \(A = \frac{n}{2^k}\)
+\\ \\
+After \(k\) iterations, the size of the array becomes 1 (narrowed down to the first element or last element only).
+\\ \\
+Length of array \(A = \frac{n}{2^k} = 1 \implies 2^k = n\)
+\\ \\
+Applying the logarithm function to both sides:
+
+\[
+\log_2(n) = \log_2(2^k) \implies k = \log_2(n)
+\]
+\\
+Therefore, \(k = \log_2(n)\).
+\\ \\ 
+This implies the binary search algorithm runs in $\mathcal{O}(\log_2 n)$ time in the worst case.
+\\ \\
+Similarly, within the inner while loop executing binary search, with other time constant operations, it can be shown that it runs in logarithmic $\mathcal{O}(\log_2 n)$ time too.
+\\ \\
+Finally, since the second binary search is nested inside the first binary search, we multiply the time complexities. As a result, our program runs in $\mathcal{O}(\log_2^2 n)$ time in the worst case.
+
+}
+
+\section*{\huge{Pseudocode}}
+
+\fontsize{12}{15}\selectfont{
+Below is the pseudocode which represents the logic of the C++ code we had written for the problem, in a more abstract and readable form. The function takes three sorted arrays (A, B, C), their size (n), and the value of k (position of the desired element). The function returns the 'k'th smallest element among all the arrays.
+}
+
+\begin{algorithm}
+\small % or \footnotesize
+\caption{An Algorithm to find the Kth smallest element in $A \cup B \cup C$, where A, B, and C are sorted integer arrays of size $n$.}
+\begin{algorithmic}[1]
+    
+    \Function{KthElement}{$A, B, C, n, k$}:
+
+        \State $low1 \gets \max(0, k - 2*n)$
+        \State $high1 \gets \min(k, n)$
+        \State $left \gets k$
+
+        \While{$low1 \leq high1$}
+            \State $mid1 \gets (low1 + high1) / 2$
+            \State $left1 \gets left - mid1$
+            
+            \State $low2 \gets \max(0, left1 - n)$
+            \State $high2 \gets \min(left1, n)$
+            
+            \While{$low2 \leq high2$}
+                \State $mid2 \gets (low2 + high2) / 2$
+                \State $mid3 \gets left1 - mid2$
+                
+                \State $r1 \gets$ ($A < n$) ? $A[mid1]$ : $+\infty$
+                \State $r2 \gets$ ($B < n$) ? $B[mid2]$ : $+\infty$
+                \State $r3 \gets$ ($C < n$) ? $C[mid3]$ : $+\infty$
+                
+                \State $l1 \gets$ ($A - 1 \geq 0$) ? $arr1[A - 1]$ : $-\infty$
+                \State $l2 \gets$ ($B - 1 \geq 0$) ? $arr2[B - 1]$ : $-\infty$
+                \State $l3 \gets$ ($C - 1 \geq 0$) ? $arr3[C - 1]$ : $-\infty$
+                
+                \If{$l1 \leq r2$ \textbf{and} $l2 \leq r1$ \textbf{and} $l2 \leq r3$ \textbf{and} $l3 \leq r2$ \textbf{and} $l1 \leq r3$ \textbf{and} $l3 \leq r1$}
+                    \State \textbf{print} $\max(l1, \max(l2, l3))$
+                    \State \textbf{return}
+                \EndIf
+
+                \If{$l1 > r2$ \textbf{or} $l1 > r3$}
+                    \State $high1 \gets mid1 - 1$
+                    \State \textbf{break}
+                \ElsIf{$x \le n_{0}$ \textbf{and} $y > n_{0}$}
+                    \State $low1 \gets mid1 + 1$
+                    \State \textbf{break}
+                \ElsIf{$l2 > r1$ \textbf{and} $l2 > r3$}
+                    \If{$r3 < r1$}
+                        \State $high2 \gets mid2 - 1$
+                    \Else
+                        % \State $low1 \gets mid1 + 1$
+                        % \State \textbf{break}
+                    \EndIf                
+                \ElsIf{$l2 > r1$ \textbf{and} $l2 > r3$}
+                    \If{$r3 < r1$}
+                        \State $high2 \gets mid2 - 1$
+                    \Else
+                        \State $low1 \gets mid1 + 1$
+                        \State \textbf{break}
+                    \EndIf
+                \ElsIf{$l3 > r1$ \textbf{and} $l3 > r2$}
+                    \If{$r1 < r2$}
+                        \State $low1 \gets mid1 + 1$
+                        \State \textbf{break}
+                    \Else
+                        \State $low2 \gets mid2 + 1$
+                    \EndIf
+                \ElsIf{$l2 > r1$ \textbf{or} $l3 > r1$}
+                    \State $low1 \gets mid1 + 1$
+                    \State \textbf{break}                
+                \ElsIf{$l2 > r3$}
+                    \State $high2 \gets mid2 - 1$                
+                \ElsIf{$l3 > r2$}
+                    \State $low2 \gets mid2 + 1$
+                \EndIf
+            \EndWhile
+        \EndWhile
+    \EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
+
+\section*{\huge{Proof of Correctness}}
+% Provide the proof of correctness for your algorithm
+
+\fontsize{12}{15}\selectfont{
+We can prove the correctness of our algorithm by demonstrating that it always produces the correct output for any valid input. Our algorithm which finds the k-th smallest element in the union of three sorted arrays, we can approach the proof of correctness using the principle of mathematical induction in the following steps:
+}
+
+\begin{claim}
+\textit{The algorithm is correct and gives the optimal solution.
+It gives the \(k\)-th smallest element in the union of three sorted \(n\)-sized arrays \(A\), \(B\) and \(C\).}
+\end{claim}
+
+
+\textit{Proof.}
+\begin{quote}
+
+\textbf{Invariant}
+\vspace*{2.5pt} \\
+\fontsize{12}{15}\selectfont{
+ Firstly, identifying an invariant that holds true at the beginning and end of each iteration of the loops. Invariants are properties that are always true during the execution of the algorithm.
+\vspace*{2.5pt} \\
+ For our algorithm, At any point during the execution of the algorithm, the \textbf{k-th smallest element} is guaranteed to be within a certain range in the union of the three sorted arrays.
+}
+\\ \\
+\textbf{Base Case}
+\vspace*{2.5pt} \\
+\fontsize{12}{15}\selectfont{
+This step involves proving that the algorithm works correctly for the base case, i.e., when the search space is small enough to be solved directly without recursion.
+\vspace*{2.5pt} \\
+In our case, for the smallest input, where \textbf{n = 1} and \textbf{k = 1}, the algorithm correctly identifies the $k$-th smallest element as the first element in the union of the arrays.
+}
+\\ \\ 
+\textbf{Inductive Step}
+\vspace*{2.5pt} \\
+\fontsize{12}{15}\selectfont{
+In the inductive step we prove that if the algorithm correctly solves the problem for a certain input size, it also correctly solves the problem for the next larger input size.
+ \\ \\
+Let us assume that our algorithm correctly finds the \(k\)-th smallest element for a given input size 'n'. In each iteration, the algorithm adjusts the search ranges based on comparisons and conditions, ensuring that the correct position of the \(k\)-th smallest element is maintained.
+}
+\\ \\
+\textbf{Termination}
+\vspace*{2.5pt} \\
+\fontsize{12}{15}\selectfont{
+Lastly, we show that the algorithm terminates after a finite number of steps.
+\vspace*{2.5pt} \\
+Our algorithm terminates when the search space is reduced to a small enough size. In each iteration, the search space is consistently reduced, moving closer to the base case. This guarantees termination after a finite number of steps.
+}
+\\ \\
+Hence, the claim is proved. \hfill $\square$
+\end{quote}
+
+\newpage
+\section*{Bibliography}
+\begin{enumerate}
+    \item
+    \href{
+        https://www.geeksforgeeks.org/binary-search/
+    }{\textbf{GeeksforGeeks:} Binary Search – Data Structure and Algorithm Tutorials}
+    \item
+    \href{
+        https://www.scaler.com/topics/time-complexity-of-binary-search/
+    }{\textbf{Scaler:} Time Complexity of Binary Search}
+    \item
+    \href{
+        https://www.youtube.com/watch?v=D1oDwWCq50g
+    }{\textbf{take U forward:} K-th element of two sorted arrays}
+    \item
+    \href{
+        https://www.youtube.com/watch?v=C2rRzz-JDk8
+    }{\textbf{take U forward:} Median of two Sorted Arrays of Different Sizes}
+    \item
+    \href{
+        
+    }{\textbf{CSE222:} Lecture Notes}
+
+    
+
+\end{enumerate}
+
+
+
+\end{document}
