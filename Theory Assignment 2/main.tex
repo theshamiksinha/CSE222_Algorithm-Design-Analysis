@@ -1,0 +1,340 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsthm} 
+\newtheorem{claim}{Claim}
+\usepackage{hyperref}
+\usepackage{enumitem} 
+
+
+\usepackage[margin=2.2cm]{geometry}
+
+\title{\fontsize{70}{40}\selectfont\textbf{Theory Assignment-2: ADA Winter-2024}}
+
+\author{\Large Shamik Sinha (2022468) \and \Large Vansh Yadav (2022559)}
+
+
+
+\date{}
+\begin{document}
+
+\maketitle
+
+\section*{\huge{Preprocessing}}
+\fontsize{12}{15}\selectfont{
+In the provided algorithm, prior to executing the algorithm, the DP array is initialized with zeros. This preparatory step ensures that the DP array begins with a clean state, devoid of any pre-existing values. By starting with a uniform state of zero values, the algorithm establishes a base condition from which subsequent computations can accurately determine the maximum number of chickens Mr. Fox can earn while navigating the obstacle course.
+}
+
+\section*{\huge{Algorithm Description}}
+% Describe your algorithm here
+ \subsection*{\Large{Assumptions Made}}
+
+\fontsize{12}{15}\selectfont{
+
+\begin{enumerate}
+    \item The arrays are composed of integers i.e. they are integer arrays or at the very least have numeric values (floating point or integer).
+    \item The array indexing follows a 0-based convention. An 'n' sized array has starting index 0 and last index at 'n'-1.
+\end{enumerate}
+
+}
+
+\subsection*{\Large{Input}}
+
+\fontsize{12}{15}\selectfont{
+The input consists of two lines:
+\begin{itemize}
+    \item The first line contains an integer , denoting the size of the array.
+    \item The second line contains $n$ integers $A[1], A[2], \ldots, A[n]$ separated by spaces, representing the elements of the array. Each integer can be positive, negative, or zero.
+\end{itemize}
+}
+
+\subsection*{\Large{Output}}
+\fontsize{12}{15}\selectfont{
+A single numeric value (Integer or Float), which is largest number of chickens that Mr. Fox earns by
+running the obstacle course.
+}
+
+\subsection*{\Large{Subproblem Definition}}
+The subproblem in this context involves determining the maximum number of chickens Mr. Fox can earn up to a certain booth in the obstacle course, considering the choices of saying "RING" or "DING" at each booth while adhering to the constraints mentioned in the problem statement. Formally, we define a subproblem as finding the maximum number of chickens earned up to booth $k$ with $i$ consecutive "RING" or "DING" choices made before booth $k$, denoted as $dp[k][i][j]$, where:
+\begin{itemize}
+    \item $k$ represents the booth number,
+    \item $i$ represents the count of consecutive "RING" or "DING" choices before booth $k$ (limited to a maximum of 3),
+    \item $j$ indicates the last choice made (0 for "RING" , 1 for "DING" and -1 is to denote that its the first recursive call).
+\end{itemize}
+
+
+% \subsection*{\Large {Recurrence of the Subproblem}}
+% The recurrence relation for this problem can be formulated as follows:
+% \[
+% dp[k][i][j] = \text{max}\left( A[k] + dp[k-1][i+1][1-j], -A[k] + dp[k-1][1][1] \right)
+% \]
+% Where:
+% \begin{itemize}
+%     \item $dp[k][i][j]$ represents the maximum number of chickens Mr. Fox can earn up to booth $k$ with $i$ consecutive "RING" or "DING" choices before booth $k$ and the last choice made as $j$.
+%     \item $A[k]$ represents the reward or penalty associated with booth $k$.
+%     \item $1-j$ flips the choice made at booth $k-1$ (if $j$ was 0, it becomes 1, and vice versa), ensuring that Mr. Fox doesn't say the same word more than three times in a row.
+%     \item $i+1$ increments the count of consecutive "RING" or "DING" choices if Mr. Fox repeats the same choice at booth $k$.
+% \end{itemize}
+
+
+\subsection*{\Large {Recurrence of the Subproblem}}
+
+\begin{align*}
+\small
+% \text{For } \text{arr[ind]} > 0 , \text{ the recurrence relation is:} \\
+& dp[ind][count][flag] = \max \left\{\fontsize{10}{15} \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][1][0]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = -1 \\
+- \text{arr[ind]} + \text{dp[ind + 1][1][1]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = -1 \\
+\end{array}. \\
+\\
+& dp[ind][count][flag] = \max \left\{\fontsize{10}{15} \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][count + 1][0]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} < 3 \\
+| \text{arr}[ind] | + \text{dp}[ind + 1][1][1] & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} < 3
+\end{array}. \\
+\\
+& dp[ind][count][flag] = \{\fontsize{10}{15} \begin{array}{ll}
+- \text{arr[ind]} + \text{dp[ind + 1][1][1]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} = 3 \\
+\end{array}. \\
+\\
+& dp[ind][count][flag] = \max \left\{\fontsize{10}{15} \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][1][0]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 1 \\
+- \text{arr[ind]} + \text{dp[ind + 1][count + 1][1]} & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 1 \\
+\end{array}. \\
+% \text{Otherwise, for } \text{arr[ind]} < 0 , \text{ the recurrence relation is:} \\
+\\
+& dp[ind][count][flag]= \max \left\{\fontsize{10}{15}  \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][1][0]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = -1 \\
+- \text{arr[ind]} + \text{dp[ind + 1][1][1]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = -1 \\
+\end{array}.\\
+\\
+& dp[ind][count][flag]= \max \left\{\fontsize{10}{15}  \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][count + 1][0]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} < 3 \\
+- \text{arr}[ind] + \text{dp}[ind + 1][1][1] & \text{if } \text{arr[ind]} < 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} < 3
+\end{array}. \\
+\\
+& dp[ind][count][flag]=  \left\{\fontsize{10}{15}  \begin{array}{ll}
+- \text{arr[ind]} + \text{dp[ind + 1][1][1]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = 0 \text{ and } \text{count} = 3 \\
+\end{array}. \\
+\\
+& dp[ind][count][flag]= \max \left\{\fontsize{10}{15}  \begin{array}{ll}
+\text{arr[ind]} + \text{dp[ind + 1][1][0]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = 1 \\
+- \text{arr[ind]} + \text{dp[ind + 1][count + 1][1]} & \text{if } \text{arr[ind]} > 0 \text{ and } \text{flag} = 1 \\
+\end{array}. \\
+% & dp[ind][count][\text{flag}] = \max(case1, case2)
+\end{align*}
+
+
+\begin{align*} T(n) = \begin{cases} 0 & \text{if } n = 0 \\ T(n - 1) + O(1) & \text{otherwise} \end{cases} \end{align*}
+\\ \\
+This recurrence relation has a linear time complexity, since it reduces the problem size by one in each step and does a constant amount of work. This matches the overall time complexity of your code, which is O(n), where n is the size of the input array.
+
+
+\subsection*{\Large {Specific Subproblem(s) for the Actual Problem}}
+The specific subproblem that solves the actual problem involves determining the maximum number of chickens Mr. Fox can earn up to the last booth while adhering to the constraints mentioned in the problem statement. 
+
+Formally, this is represented by the subproblem of finding the maximum number of chickens earned up to booth $n$ with $i$ consecutive "RING" or "DING" choices made before booth $n$, denoted as $dp[n][i][j]$, where:
+\begin{itemize}
+    \item $n$ is the total number of booths,
+    \item $i$ represents the count of consecutive "RING" or "DING" choices before booth $n$ (limited to a maximum of 3),
+    \item $j$ indicates the last choice made (0 for "RING" and 1 for "DING").
+\end{itemize}
+
+The solution to this specific subproblem, stored in $dp[n][i][j]$, provides the maximum number of chickens Mr. Fox can earn after navigating all booths, satisfying the conditions mentioned in the problem statement.
+\\\\
+The final answer, representing the maximum number of chickens that Mr. Fox can earn while traversing the obstacle course, is stored in \(\text{dp}[0][0][0]\).
+\\\\
+This value corresponds to the maximum number of chickens earned by Mr. Fox when he starts from the first booth, has made no consecutive occurrences of the same action and his previous action was arbitrary.
+\\\\
+Thus, to obtain the final result of the algorithm, one should output \(\text{dp}[0][0][0]\).
+
+\subsection*{\Large{Algorithm Description}}
+\fontsize{12}{15}\selectfont{
+
+The provided code efficiently solves the problem of maximizing Mr. Fox's chicken earnings while navigating an obstacle course with rewards and penalties. It uses dynamic programming to iterate through each booth, considering the options of saying "RING" or "DING" while adhering to the constraints. By updating a 3D array to store the maximum earnings at each booth, the algorithm computes the optimal solution. Finally, it returns the maximum number of chickens earned after navigating all booths.
+
+
+
+\subsection*{1. Initialization}
+\begin{itemize}
+    \item We start by initializing a 3D array $dp$ to store the maximum number of chickens Mr. Fox can earn up to each booth. The dimensions of this array are $(n+1) \times 4 \times 2$, where $n$ is the number of booths. The three dimensions represent:
+    \begin{itemize}
+        \item $k$: the booth number,
+        \item $i$: the count of consecutive "RING" or "DING" said before the $k$-th booth (limited to a maximum of 3),
+        \item $j$: the last choice made (0 for "RING" and 1 for "DING").
+    \end{itemize}
+\end{itemize}
+
+\subsection*{2. Base Case Initialization}
+\begin{itemize}
+    \item We initialize the values for the first booth ($k = 1$). For each possible count of consecutive choices $i$ and each possible last choice $j$, we compute the initial values for $dp[1][i][j]$. These initial values represent the rewards or penalties associated with the first booth, depending on whether Mr. Fox chooses "RING" or "DING".
+\end{itemize}
+
+\subsection*{3. Dynamic Programming}
+\begin{itemize}
+    \item Next, we iterate through the booths starting from the second booth ($k = 2$). For each booth $k$, we consider all possible counts of consecutive choices $i$ and last choices $j$.
+    \item For each combination of $i$ and $j$, we update $dp[k][i][j]$ based on the choices made at the previous booth ($k-1$) and the reward/penalty associated with the current booth ($A[k]$).
+    \item We update $dp[k][i][j]$ by considering the two possible choices Mr. Fox has at the current booth: "RING" or "DING". We choose the option that maximizes the number of chickens earned up to the current booth, while adhering to the constraints mentioned in the problem statement.
+\end{itemize}
+
+\subsection*{4. Maximum Chickens Earned}
+\begin{itemize}
+    \item After iterating through all booths, we compute the maximum number of chickens earned by Mr. Fox. This value is the maximum among $dp[n][0][0]$, $dp[n][1][0]$, $dp[n][2][0]$, and $dp[n][3][0]$, where $n$ is the total number of booths. This represents the maximum number of chickens earned after navigating all booths.
+\end{itemize}
+
+\subsection*{5. Return the Result}
+\begin{itemize}
+    \item Finally, we return the maximum number of chickens earned as the solution to the problem.
+\end{itemize}
+
+}
+
+\newpage
+
+\section*{Time Complexity Analysis}
+
+\begin{enumerate}
+    \item \textbf{Input Reading}: Reading the input array $\texttt{arr}$ takes linear time, $O(n)$, where $n$ is the size of the array.
+    
+    \item \textbf{Dynamic Programming Loop}:
+    \begin{itemize}
+        \item The outer loop iterates over each index in the array $\texttt{arr}$, so it runs $n$ times.
+        \item Inside this loop, there are three nested loops, each of which iterates at most 4 times ($\texttt{count}$ from 0 to 3 and $\texttt{flag}$ from 0 to 1).
+        \item Inside the innermost loop, there are constant time operations.
+    \end{itemize}
+    Therefore, the time complexity within the dynamic programming loop is $O(n)$.
+\end{enumerate}
+
+Overall, the time complexity of the code is $O(n)$.
+
+
+\section*{Space Complexity Analysis}
+
+\begin{enumerate}
+    \item \textbf{Input Storage}: An array $\texttt{arr}$ of size $n$ is used to store the input elements, resulting in $O(n)$ space complexity.
+    
+    \item \textbf{Dynamic Programming Table}:
+    \begin{itemize}
+        \item The dynamic programming table $\texttt{dp}$ is a 3D vector of size $(n+1) \times 4 \times 2$, which results in $O(n)$ space complexity.
+    \end{itemize}
+    
+    \item \textbf{Other Variables}:
+    \begin{itemize}
+        \item Other variables like $\texttt{ind}$, $\texttt{count}$, $\texttt{flag}$, and $\texttt{result}$ are integers, which occupy constant space.
+    \end{itemize}
+\end{enumerate}
+
+
+\section*{Summary}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: $O(n)$
+    \item \textbf{Space Complexity}: $O(n)$
+\end{itemize}
+
+The code utilizes dynamic programming to optimize the solution to the problem, and its time and space complexities are both linear in terms of the input size.
+
+
+\section*{\huge{Pseudocode}}
+
+\fontsize{12}{15}\selectfont{
+Below is the pseudocode which represents the logic of the C++ code we had written for the problem, in a more abstract and readable form. The function takes one array and its size (n). The function returns the largest number of chickens that Mr. Fox earns by running the obstacle course.
+}
+
+\begin{algorithm}
+\small % or \footnotesize
+\caption{An Algorithm to find the largest number of chickens that Mr. Fox earns by running the obstacle course $n$.}
+\begin{algorithmic}[1]
+    
+    \Function{Solve}{arr, n}:
+        \State $dp \gets$ a 3D array of size $n+1 \times 4 \times 2$ filled with zeros
+        \For{$ind$ from $n-1$ to $0$}:
+            \For{$count$ from $0$ to $3$}:
+                \For{$flag$ from $0$ to $1$}:
+                    \State $result \gets dp[ind][count][flag]$
+                    \If{$arr[ind] < 0$}:
+                        \If{$flag == -1$}:
+                            \State $a1 \gets arr[ind] + dp[ind + 1][1][0]$
+                            \State $a2 \gets |arr[ind]| + dp[ind + 1][1][1]$
+                            \State $result \gets \max(a1, a2)$
+                        \ElsIf{$flag == 0$}:
+                            \If{$count == 3$}:
+                                \State $result \gets |arr[ind]| + dp[ind + 1][1][1]$
+                            \Else:
+                                \State $a1 \gets arr[ind] + dp[ind + 1][count + 1][0]$
+                                \State $a2 \gets |arr[ind]| + dp[ind + 1][1][1]$
+                                \State $result \gets \max(a1, a2)$
+                            \EndIf
+                        \ElsIf{$flag == 1$}:
+                            \If{$count == 3$}:
+                                \State $result \gets arr[ind] + dp[ind + 1][1][0]$
+                            \Else:
+                                \State $a1 \gets arr[ind] + dp[ind + 1][1][0]$
+                                \State $a2 \gets |arr[ind]| + dp[ind + 1][count + 1][1]$
+                                \State $result \gets \max(a1, a2)$
+                            \EndIf
+                        \EndIf
+                    \Else:
+                        \If{$flag == -1$}:
+                            \State $a1 \gets arr[ind] + dp[ind + 1][1][0]$
+                            \State $a2 \gets -1 \times arr[ind] + dp[ind + 1][1][1]$
+                            \State $result \gets \max(a1, a2)$
+                        \ElsIf{$flag == 0$}:
+                            \If{$count == 3$}:
+                                \State $result \gets -1 \times arr[ind] + dp[ind + 1][1][1]$
+                            \Else:
+                                \State $a1 \gets arr[ind] + dp[ind + 1][count + 1][0]$
+                                \State $a2 \gets -1 \times arr[ind] + dp[ind + 1][1][1]$
+                                \State $result \gets \max(a1, a2)$
+                            \EndIf
+                        \ElsIf{$flag == 1$}:
+                            \If{$count == 3$}:
+                                \State $result \gets arr[ind] + dp[ind + 1][1][0]$
+                            \Else:
+                                \State $a1 \gets arr[ind] + dp[ind + 1][1][0]$
+                                \State $a2 \gets -1 \times arr[ind] + dp[ind + 1][count + 1][1]$
+                                \State $result \gets \max(a1, a2)$
+                            \EndIf
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndFor
+        \EndFor
+        \State \Return $dp[0][0][0]$
+    \EndFunction
+\end{algorithmic}
+\end{algorithm}
+    
+\newpage
+
+
+\section*{\huge Proof of Correctness}
+
+\subsection*{\Large Optimal Substructure:}
+We aim to maximize the number of chickens Mr. Fox can earn while navigating the obstacle course. This can be achieved by making optimal choices at each booth, considering the rewards and penalties associated with the choices.
+
+For any booth $k$, the maximum number of chickens earned up to that booth depends on the maximum number of chickens earned at the previous booth, considering all possible choices made at the previous booth.
+
+\subsection*{\Large Overlapping Subproblems:}
+The overlapping subproblems arise from the fact that the same subproblem can occur at multiple booths. As we traverse through the booths, the choices made at previous booths affect the choices available at the current booth. Therefore, we can use dynamic programming to store and reuse the solutions to these overlapping subproblems efficiently.
+
+\subsection*{\Large Proof by Induction:}
+\begin{itemize}
+    \item \textbf{Base Case:} The base case occurs when Mr. Fox reaches the first booth ($k = 1$). Here, the maximum number of chickens earned is simply the reward or penalty associated with the first booth, depending on whether Mr. Fox chooses "RING" or "DING" ($dp[1][i][j]$). This base case is trivially correct.
+    
+    \item \textbf{Inductive Step:} For each subsequent booth $k$, we update $dp[k][i][j]$ based on the choices made at previous booths. By considering all possible choices at each booth, we select the one that maximizes the number of chickens earned up to the current booth while adhering to the constraints. Since we use optimal solutions to subproblems, we construct an optimal solution for the entire obstacle course.
+    
+    \item \textbf{Termination:} The algorithm terminates once Mr. Fox visits every booth, and the maximum number of chickens earned is stored in $dp[n][i][j]$, where $n$ is the total number of booths.
+\end{itemize}
+
+By demonstrating both optimal substructure and overlapping subproblems, we establish the correctness of the algorithm, ensuring that it computes the largest number of chickens Mr. Fox can earn by navigating the obstacle course.
+
+\end{document}
+
+
+
+
+\end{document}
