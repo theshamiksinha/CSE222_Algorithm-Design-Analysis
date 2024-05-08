@@ -1,0 +1,245 @@
+s\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsthm} 
+\newtheorem{claim}{Claim}
+\usepackage{hyperref}
+\usepackage{enumitem} 
+    
+
+\usepackage[margin=2.2cm]{geometry}
+
+\title{\fontsize{70}{40}\selectfont\textbf{Theory Assignment-4: ADA Winter-2024}}
+
+\author{\Large Shamik Sinha (2022468) \and \Large Vansh Yadav (2022559)}
+
+
+
+\date{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\large{Assumptions Made}}
+
+Our algorithm for finding (s, t)-cut vertices in a directed acyclic graph (DAG) assumes the following:
+
+\begin{enumerate}
+    \item The graph is represented by an adjacency list where each vertex \(v_i\) is associated with a list of vertices it is adjacent to, denoted by \(adj[v_i]\).
+    \item The graph consists of \(n\) vertices, numbered from \(0\) to \(n-1\).
+    \item The vertices \(s\) and \(t\) are part of the graph, and they are distinct from each other and from all other vertices in the graph.
+    \item There is always a path between vertices \(s\) and \(t\).
+    \item Each edge in the graph is directed, and there are no self-loops.
+    \item The graph is acyclic, meaning there are no cycles present.
+\end{enumerate}
+
+
+\subsection*{\Large{Input}}
+
+The input describes a directed acyclic graph (DAG) with the following properties:
+
+\begin{itemize}
+    \item \textbf{Number of Vertices (\( n \))} 
+    \item \textbf{Number of Edges (\( m \))} 
+    \item \textbf{Source Vertex (\( s \))} 
+    \item \textbf{Target Vertex (\( t \))} 
+\end{itemize}
+
+The edges of the graph are provided in the following format:
+
+\[
+\text{{[vertex\_from]} \(\rightarrow\) [vertex\_to]}
+\]
+
+Each entry represents a directed edge from a source vertex to a target vertex.
+
+
+\subsection*{\Large{Output}}
+The output consists of a list of vertices that are (s, t)-cut vertices in the directed acyclic graph (DAG). The format is as follows:
+
+\begin{itemize}
+    \item The output is a single line containing space-separated integers representing the (s, t)-cut vertices.
+    \item Each integer corresponds to a vertex that lies on all paths from the source vertex \( s \) to the target vertex \( t \), excluding \( s \) and \( t \) themselves.
+\end{itemize}
+
+\section*{\huge{Algorithm Description}}
+
+The algorithm is designed to find all the vertices in a directed acyclic graph (DAG) that act as $(s, t)$-cut vertices, i.e., vertices that must be traversed in order to go from the source vertex $s$ to the target vertex $t$. Below are the main steps of the algorithm:
+
+\begin{enumerate}
+    \item \textbf{Input Reading}:
+    \begin{itemize}
+        \item Read the number of vertices $n$ and the number of edges $m$ from the input.
+        \item Read the source vertex $s$ and the target vertex $t$ from the input.
+        \item Construct the adjacency list representing the graph.
+    \end{itemize}
+
+    \item \textbf{Main Loop}:
+    \begin{itemize}
+        \item Iterate over all vertices except for $s$ and $t$, since they cannot be cut vertices i.e. are always included in the path from s to t.
+        \item Create a vector \texttt{visited} to mark visited nodes during the DFS traversal.
+        \item Call the \texttt{isCutVertex} function for each vertex to determine if it is a cut vertex.
+        \item If a vertex is not found to be necessary to reach $t$, add it to the list of cut vertices (\texttt{cutVertices}).
+    \end{itemize}
+    
+    \item \textbf{DFS Function \texttt{isCutVertex}}:
+    \begin{itemize}
+        \item This function performs a Depth-First Search (DFS) traversal starting from the source vertex $s$ to determine if a given vertex $i$ is a cut vertex.
+        \item It traverses the graph recursively, marking visited nodes and avoiding the deleted node (passed as an argument).
+        \item If the destination vertex $t$ is reached during traversal, it returns \texttt{true}, indicating that the vertex is necessary to reach $t$. Therefore, any path between s and t must pass through this vertex i.e. it is a cut vertex.
+        \item Otherwise, it returns \texttt{false}, indicating that the vertex is not necessary to reach $t$ and therefore not a cut vertex.
+        \item The recurrence in the DFS function \texttt{isCutVertex} arises from its recursive nature:
+        
+        \begin{enumerate}
+            \item \textbf{Base Case}: When the function reaches the destination vertex \( t \), it returns \texttt{true}, indicating that the vertex is necessary to reach \( t \), and thus, it is a cut vertex.
+            
+            \item \textbf{Recursive Case}: If the function has not reached \( t \), it continues the DFS traversal by exploring neighboring vertices recursively.
+\end{enumerate}
+
+The recurrence occurs as the function explores neighboring vertices until it either reaches \( t \) or exhausts all reachable vertices.
+    \end{itemize}
+    
+    \item \textbf{Output}:
+    \begin{itemize}
+        \item Print the list of cut vertices (\texttt{cutVertices}).
+    \end{itemize}
+\end{enumerate}
+\\
+The main idea behind the algorithm is to perform a DFS traversal from $s$ to $t$, excluding one vertex at a time and checking if $t$ is still reachable. If $t$ is reachable after excluding a vertex, it implies that the excluded vertex is necessary to traverse from $s$ to $t$, making it a cut vertex. The algorithm employs a depth-first search approach to efficiently explore the graph and identify the cut vertices.
+
+
+\section*{\huge{Time and Space Complexity}}
+\section*{Time Complexity Analysis}
+
+
+The running time of the provided algorithm can be analyzed as follows:
+
+\begin{enumerate}
+    \item \textbf{Input Reading}: Reading the number of vertices, number of edges, source vertex, and target vertex takes constant time, denoted as \( O(1) \).
+    
+    \item \textbf{Constructing Adjacency List}: Constructing the adjacency list from the input edges requires iterating over all edges once, which takes \( O(m) \) time, where \( m \) is the number of edges.
+
+    \item \textbf{Main Loop}:
+    \begin{itemize}
+        \item The main loop iterates over all vertices except \( s \) and \( t \), which takes \( O(n) \) time.
+        \item Inside the loop, a DFS traversal is performed using the \texttt{isCutVertex} function, which takes \( O(n + m) \) time per iteration.
+        \item Therefore, the total time complexity of the main loop is \( O(n^2 + mn) \).
+    \end{itemize}
+    
+    
+    \item \textbf{DFS Function \texttt{isCutVertex}}:
+    \begin{itemize}
+        \item The DFS function traverses the graph recursively from the source vertex to determine if a given vertex is a cut vertex. In the worst case, each vertex and each edge may be visited once, resulting in \( O(n + m) \) time complexity, where \( n \) is the number of vertices and \( m \) is the number of edges. 
+        \\ \\The worst case occurs when the algorithm has to traverse through all the nodes in the graph. Therefore the sum of the vertices(n) and the edges(m) is the worst-case scenario. This can be expressed as O( n + m ). \\
+        \item This function is called for each vertex except \( s \) and \( t \), leading to a total worst-case complexity of \( O(n*(n + m)) \).
+    \end{itemize}
+    
+    \item \textbf{Output}: Printing the list of cut vertices takes linear time with respect to the number of cut vertices, which is \( O(n) \) in the worst case.
+\end{enumerate}
+\\ \\
+Combining all the steps, the overall time complexity of the algorithm is dominated by the DFS traversal within the main loop. Therefore, the explicit polynomial running time of the algorithm is \( O(n^2 + mn) \), where \( n \) is the number of vertices and \( m \) is the number of edges in the graph.
+\\ \\
+This running time is consistent with the algorithm's design, as it involves traversing the graph using DFS, which has a time complexity proportional to the number of vertices and edges visited. Since the graph is a directed acyclic graph (DAG), the DFS traversal ensures that each vertex and edge is visited at most once, resulting in a polynomial time complexity.
+
+
+\section*{Space Complexity Analysis}
+
+The space complexity of the algorithm:
+
+\begin{enumerate}
+    \item \textbf{Adjacency List}: The adjacency list requires \( O(n + m) \) space to store the graph, where \( n \) is the number of vertices and \( m \) is the number of edges.
+    
+    \item \textbf{Visited Array}: Within the \texttt{isCutVertex} function, a visited array of size \( n \) is created to mark vertices as visited during the DFS traversal. Therefore, it requires \( O(n) \) space.
+    
+    \item \textbf{Main Loop Variables}: Additional variables used within the main loop, such as loop counters and the list of cut vertices, require negligible space compared to the size of the graph.
+    
+    \item \textbf{DFS Stack}: The DFS function utilizes recursion, which results in a call stack. The maximum depth of the call stack corresponds to the depth of the DFS traversal, which can be at most \( n \) in the worst case (when the entire graph needs to be traversed). Therefore, the space complexity contributed by the call stack is \( O(n) \).
+\end{enumerate}
+\\
+Combining all the components, the total space complexity of the algorithm is dominated by the space required for the adjacency list and the visited array, resulting in \( O(n + m) \) space complexity.
+\\ \\
+This space complexity analysis indicates that the space required by the algorithm grows linearly with the size of the input graph, making it efficient in terms of memory usage. 
+
+\newpage
+
+\section*{\huge{Pseudocode}}
+
+\fontsize{12}{15}\selectfont{
+Below is the pseudocode which represents the logic of the C++ code we had written for the problem, in a more abstract and readable form. 
+}
+\begin{algorithm}
+\caption{Algorithm to Determine Cut Vertices between two vertices s and t}
+\begin{algorithmic}[1]
+\Function{isCutVertex}{$adj[], visited[], node, deleted, destination$}
+    \State $visited[node] \gets 1$
+    \For{$it$ \textbf{in} $adj[node]$}
+        \If{$it == destination$}
+            \State \Return \textbf{true}
+        \EndIf
+        \If{$it == deleted$}
+            \State \textbf{continue} \Comment{Skip if the node is deleted}
+        \EndIf
+        \If{not $visited[it]$}
+            \If{\Call{isCutVertex}{$adj, visited, it, deleted, destination$}}
+                \State \Return \textbf{true}
+            \EndIf
+        \EndIf
+    \EndFor
+    \State \Return \textbf{false}
+\EndFunction
+% \end{algorithmic}
+% \end{algorithm}
+\\
+% \begin{algorithm}
+% \caption{Main Function}
+% \begin{algorithmic}[1]
+\Function{main}{}
+    \State $n, m \gets$ \Call{input}{$\text{"Enter number of vertices: "}$}, \Call{input}{$\text{"Enter number of edges: "}$}
+    \State $s, t \gets$ \Call{input}{$\text{"Enter source and destination vertices: "}$}
+    \State $adj[] \gets$ \Call{array}{$n+2$} \Comment{Adjacency list}
+    \For{$i \gets 0$ \textbf{to} $m-1$}
+        \State $u, v \gets$ \Call{input}{}
+        \State \Call{append}{$adj[u], v$} \Comment{Adding edge to adjacency list}
+    \EndFor
+    \State $cutVertices \gets$ \Call{array}{}\Comment{Vector to store cut vertices}
+    \For{$i \gets 0$ \textbf{to} $n-1$}
+        \If{$i \neq s$ \textbf{and} $i \neq t$}
+            \State $visited[] \gets$ \Call{array}{$n, 0$}
+            \If{\textbf{not} \Call{isCutVertex}{$adj, visited, s, i, t$}}\Comment{Function call to check if vertex is cut vertex}
+                \State \Call{append}{$cutVertices , i$}
+            \EndIf
+        \EndIf
+    \EndFor 
+    \For{$i$ \textbf{in} $cutVertices$} \Comment{Printing cut vertices}
+        \State \textbf{print} $i$
+    \EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+    
+\newpage
+
+
+\section*{\huge Correctness of Algorithm}
+
+
+The algorithm correctly finds all the cut vertices by systematically evaluating each vertex in the graph and determining whether removing that vertex would disconnect the source vertex \( s \) from the target vertex \( t \). Here's a brief explanation of why the algorithm works:
+
+\begin{enumerate}
+    \item \textbf{DFS Traversal}: The algorithm uses Depth-First Search (DFS) to traverse the graph from the source vertex \( s \) to the target vertex \( t \). During this traversal, it marks visited vertices to keep track of the path taken.
+    
+    \item \textbf{Cut Vertex Identification}: For each vertex \( v \) in the graph (excluding \( s \) and \( t \)), the algorithm temporarily "removes" \( v \) from the graph (skips calling DFS on it) and performs a DFS traversal from \( s \) to \( t \). If \( t \) is still reachable after removing \( v \), it means that \( v \) is not a cut vertex because there exists an alternate path from \( s \) to \( t \) that does not include \( v \).
+    
+    \item \textbf{Recording Cut Vertices}: If \( t \) becomes unreachable after removing \( v \), it implies that \( v \) is a cut vertex because removing it from the graph disconnects the path from \( s \) to \( t \). In this case, the algorithm records \( v \) as a cut vertex.
+    
+    \item \textbf{Returning Cut Vertices}: After evaluating all vertices (excluding \( s \) and \( t \)), the algorithm returns the list of recorded cut vertices.
+\end{enumerate}
+\\ \\
+By systematically evaluating each vertex's impact on the connectivity between \( s \) and \( t \), the algorithm ensures that it correctly identifies all the vertices that, if removed, would disconnect \( s \) from \( t \). Therefore, the algorithm correctly finds all the cut vertices in the graph.
+
+\end{document}
